@@ -12,9 +12,9 @@
         <!-- Styles -->
     </head>
     <body>
-        <div id="app">
-            <example-component></example-component>
-        </div>
+       <v-app id="app">
+           <example-component></example-component>
+       </v-app>
         <script src="{{ asset('js/app.js') }}"></script>
     </body>
 </html>
