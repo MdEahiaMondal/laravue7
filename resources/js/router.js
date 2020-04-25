@@ -3,13 +3,13 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter);// external pakege use like this
 
-const Foo = {template: '<v-alert type="error">Show error</v-alert>'};
-const Bar = {template: '<v-alert type="success">Show success</v-alert>'};
-const User = {template: '<v-alert type="info">My Name is {{ $route.params.name }}</v-alert>'};
+import LoginComponent from "./components/LoginComponent";
+import AdminComponent from "./components/AdminComponent";
 
 const routes = [
-    {path: '/foo', component: Foo},
-    {path: '/bar', component: Bar},
-    {path: '/user/:name', component: User}
+    {path: '/', redirect: {path: '/login'}},
+    {path: '/login', component: LoginComponent, name: 'Login'},
+    {path: '/admin', component: AdminComponent, name: 'Admin'},
 ];
 export default new VueRouter({routes})
+
