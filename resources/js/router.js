@@ -9,7 +9,19 @@ import AdminComponent from "./components/AdminComponent";
 const routes = [
     {path: '/', redirect: {path: '/login'}},
     {path: '/login', component: LoginComponent, name: 'Login'},
-    {path: '/admin', component: AdminComponent, name: 'Admin'},
+    {
+        path: '/admin',
+        component: AdminComponent,
+        name: 'Admin',
+        beforeEnter: (to, from, next) => {
+            if (localStorage.getItem('token'))
+            {
+                next();
+            }else{
+                next({name: 'Login'});
+            }
+        }
+    },
 ];
 export default new VueRouter({routes})
 
