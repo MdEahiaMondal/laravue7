@@ -1914,6 +1914,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     console.log('Component mounted.');
@@ -19522,11 +19531,29 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "v-container",
+    "div",
     [
-      _c("v-alert", { attrs: { type: "info", "colored-border": "true" } }, [
-        _vm._v("I am Here ")
-      ])
+      _c(
+        "v-container",
+        [_c("v-alert", { attrs: { type: "info" } }, [_vm._v("I am Here ")])],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-content",
+        [
+          _c("v-btn", { attrs: { link: "", to: "/foo" } }, [_vm._v("Foo")]),
+          _vm._v(" "),
+          _c("v-btn", { attrs: { link: "", to: "/bar" } }, [_vm._v("Bar")]),
+          _vm._v(" "),
+          _c("v-btn", { attrs: { link: "", to: "/user/khan" } }, [
+            _vm._v("User With params")
+          ]),
+          _vm._v(" "),
+          _c("router-view")
+        ],
+        1
+      )
     ],
     1
   )
@@ -76450,7 +76477,25 @@ __webpack_require__.r(__webpack_exports__);
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]); // external pakege use like this
 
-var routes = [];
+var Foo = {
+  template: '<v-alert type="error">Show error</v-alert>'
+};
+var Bar = {
+  template: '<v-alert type="success">Show success</v-alert>'
+};
+var User = {
+  template: '<v-alert type="info">My Name is {{ $route.params.name }}</v-alert>'
+};
+var routes = [{
+  path: '/foo',
+  component: Foo
+}, {
+  path: '/bar',
+  component: Bar
+}, {
+  path: '/user/:name',
+  component: User
+}];
 /* harmony default export */ __webpack_exports__["default"] = (new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   routes: routes
 }));
