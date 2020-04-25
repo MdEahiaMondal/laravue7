@@ -10,6 +10,13 @@
                                 <v-spacer />
                             </v-toolbar>
                             <v-card-text>
+                                <v-progress-linear
+                                    :active="loading"
+                                    :indeterminate="loading"
+                                    absolute
+                                    top
+                                    color="white"
+                                ></v-progress-linear>
                                 <v-form>
                                     <v-text-field label="Login" v-model="username" name="login" prepend-icon="mdi-account-circle-outline" type="text"/>
                                     <v-text-field id="password" v-model="password" label="Password" name="password" prepend-icon="mdi-account-lock-outline" type="password"/>
@@ -19,6 +26,20 @@
                                 <v-btn color="error" block @click="login">Login</v-btn>
                             </v-card-actions>
                         </v-card>
+
+                        <v-snackbar
+                            v-model="snackbar"
+                        >
+                            {{ sanack_text }}
+                            <v-btn
+                                color="pink"
+                                text
+                                @click="snackbar = false"
+                            >
+                                Close
+                            </v-btn>
+                        </v-snackbar>
+
                     </v-col>
                 </v-row>
             </v-container>
@@ -33,13 +54,48 @@
         {
           return {
               username: '',
-              password: ''
+              password: '',
+              loading: false,
+              sanack_text: '',
+              snackbar: false,
           }
+        },
+        created(){
+            this.$vuetify.theme.dark = true
         },
         methods: {
             login()
             {
-                localStorage.setItem('token', '65df42s3dfs5d4f')
+                // Add a request interceptor
+                axios.interceptors.request.use((config) => {
+                    // Do something before request is sent
+                    this.loading = true;
+                    return config;
+                }, (error) => {
+                    // Do something with request erro
+                    return Promise.reject(error);
+                });
+
+                // Add a response interceptor
+                axios.interceptors.response.use( (response) =>{
+                    // Any status code that lie within the range of 2xx cause this function to trigger
+                    // Do something with response data
+                    return response;
+                }, (error) =>{
+                    // Any status codes that falls outside the range of 2xx cause this function to trigger
+                    // Do something with response error
+                    this.loading = false;
+                    return Promise.reject(error);
+                });
+                axios.post('/api/login', {'username': this.username, 'password': this.password})
+                    .then(res => {
+                        console.log(res)
+                    })
+                    .catch(error => {
+                        this.snackbar = true;
+                        this.sanack_text = error.response.data.status
+                    })
+                // localStorage.setItem('token', '65df42s3dfs5d4f')
             }
         }
     }

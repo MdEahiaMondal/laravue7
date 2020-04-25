@@ -13,13 +13,17 @@ class UserController extends Controller
     {
         $username = $request->username;
         $password = bcrypt($request->password);
-        $user = User::where('name', $username)->where('password', $password)->first();
+        $user = User::where('name', $username)
+            ->where('password', $password)
+            ->first();
         $token = Hash::make($request->password);
         if ($user)
         {
             $user->api_token = $token;
             $user->save();
-            return $token;
+            return response()->json(['token' => $token], 200);
+        }else{
+            return response()->json(['status' => 'Username Or Password is Wrong'], 403);
         }
     }
 }
