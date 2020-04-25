@@ -16,8 +16,7 @@
                                 </v-form>
                             </v-card-text>
                             <v-card-actions>
-                                <v-spacer />
-                                <v-btn color="error" @click="login">Login</v-btn>
+                                <v-btn color="error" block @click="login">Login</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-col>

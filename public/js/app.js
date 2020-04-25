@@ -2118,7 +2118,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "LoginComponent",
   data: function data() {
@@ -20072,12 +20071,10 @@ var render = function() {
                           _c(
                             "v-card-actions",
                             [
-                              _c("v-spacer"),
-                              _vm._v(" "),
                               _c(
                                 "v-btn",
                                 {
-                                  attrs: { color: "error" },
+                                  attrs: { color: "error", block: "" },
                                   on: { click: _vm.login }
                                 },
                                 [_vm._v("Login")]
