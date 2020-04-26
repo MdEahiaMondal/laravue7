@@ -10,6 +10,7 @@
                     v-for="item in items"
                     :key="item.text"
                     link
+                    :to="item.action"
                 >
                     <v-list-item-action>
                         <v-icon>{{ item.icon }}</v-icon>
@@ -61,15 +62,18 @@
             dense
         >
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-            <v-icon
-                class="mx-4"
-                large
-            >
-                mdi-youtube
-            </v-icon>
-            <v-toolbar-title class="mr-12 align-center">
-                <span class="title">Youtube</span>
-            </v-toolbar-title>
+            <v-btn text to="/admin" left>
+                <v-icon
+                    class="mx-4"
+                    large
+                >
+                    mdi-youtube
+                </v-icon>
+                <v-toolbar-title class="mr-12 align-center">
+                    <span class="title">Laravue-vuetify</span>
+                </v-toolbar-title>
+            </v-btn>
+
             <v-spacer />
             <v-row
                 align="center"
@@ -87,11 +91,9 @@
         </v-app-bar>
 
         <v-content>
-            <v-container class="fill-height">
-                <v-row
-                    justify="center"
-                    align="center"
-                >
+            <router-view></router-view>
+            <v-container class="">
+                <v-row justify="center" align="center">
                     <v-col class="shrink">
 
                         <v-snackbar
@@ -123,11 +125,11 @@
         data: () => ({
             drawer: null,
             items: [
-                { icon: 'mdi-trending-up', text: 'Most Popular' },
-                { icon: 'mdi-youtube-subscription', text: 'Subscriptions' },
-                { icon: 'mdi-history', text: 'History' },
-                { icon: 'mdi-playlist-play', text: 'Playlists' },
-                { icon: 'mdi-clock', text: 'Watch Later' },
+                { icon: 'mdi-account', text: 'Users', action: 'users' },
+                { icon: 'mdi-post-outline', text: 'Posts', action: 'posts' },
+                { icon: 'mdi-circle-edit-outline', text: 'Pages', action: 'pages' },
+                { icon: 'mdi-briefcase-edit-outline', text: 'Categories', action: 'categories' },
+                { icon: 'mdi-account-badge-outline', text: 'Roles', action: '/admin/roles' },
             ],
             items2: [
                 { picture: 28, text: 'Joseph' },
