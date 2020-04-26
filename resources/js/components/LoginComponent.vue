@@ -18,8 +18,8 @@
                                     color="white"
                                 ></v-progress-linear>
                                 <v-form>
-                                    <v-text-field label="Login" v-model="username" name="login" prepend-icon="mdi-account-circle-outline" type="text"/>
-                                    <v-text-field id="password" v-model="password" label="Password" name="password" prepend-icon="mdi-account-lock-outline" type="password"/>
+                                    <v-text-field color="error" label="Login" v-model="username" name="login" prepend-icon="mdi-account-circle-outline" type="text"/>
+                                    <v-text-field  color="error" id="password" v-model="password" label="Password" name="password" prepend-icon="mdi-account-lock-outline" type="password"/>
                                 </v-form>
                             </v-card-text>
                             <v-card-actions>
@@ -73,6 +73,7 @@
                     return config;
                 }, (error) => {
                     // Do something with request erro
+                    this.loading = false;
                     return Promise.reject(error);
                 });
 
@@ -80,6 +81,7 @@
                 axios.interceptors.response.use( (response) =>{
                     // Any status code that lie within the range of 2xx cause this function to trigger
                     // Do something with response data
+                    this.loading = false;
                     return response;
                 }, (error) =>{
                     // Any status codes that falls outside the range of 2xx cause this function to trigger
@@ -89,7 +91,15 @@
                 });
                 axios.post('/api/login', {'username': this.username, 'password': this.password})
                     .then(res => {
-                        console.log(res)
+                        this.loading = false;
+                        localStorage.setItem('token', res.data.token) // take token in session
+                        this.$router.push('/admin') // then redirect to others pages
+                            .then(res => {
+                                console.log('Login Successfully')
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            })
                     })
                     .catch(error => {
                         this.snackbar = true;

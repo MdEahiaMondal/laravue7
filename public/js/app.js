@@ -2011,6 +2011,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "AdminComponent",
   props: {
@@ -2050,11 +2063,25 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         picture: 78,
         text: 'MKBHD'
-      }]
+      }],
+      snackbar: false,
+      sanack_text: ''
     };
   },
   created: function created() {
     this.$vuetify.theme.dark = true;
+    this.sanack_text = 'You are login successfully!';
+    this.snackbar = true;
+  },
+  methods: {
+    logout: function logout() {
+      localStorage.removeItem('token');
+      this.$router.push('/login').then(function (res) {
+        console.log('Logout Successfully');
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
   }
 });
 
@@ -2164,12 +2191,14 @@ __webpack_require__.r(__webpack_exports__);
         return config;
       }, function (error) {
         // Do something with request erro
+        _this.loading = false;
         return Promise.reject(error);
       }); // Add a response interceptor
 
       axios.interceptors.response.use(function (response) {
         // Any status code that lie within the range of 2xx cause this function to trigger
         // Do something with response data
+        _this.loading = false;
         return response;
       }, function (error) {
         // Any status codes that falls outside the range of 2xx cause this function to trigger
@@ -2181,7 +2210,15 @@ __webpack_require__.r(__webpack_exports__);
         'username': this.username,
         'password': this.password
       }).then(function (res) {
-        console.log(res);
+        _this.loading = false;
+        localStorage.setItem('token', res.data.token); // take token in session
+
+        _this.$router.push('/admin') // then redirect to others pages
+        .then(function (res) {
+          console.log('Login Successfully');
+        })["catch"](function (error) {
+          console.log(error);
+        });
       })["catch"](function (error) {
         _this.snackbar = true;
         _this.sanack_text = error.response.data.status;
@@ -19901,13 +19938,13 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "v-list-item",
-                { attrs: { link: "" } },
+                { attrs: { link: "" }, on: { click: _vm.logout } },
                 [
                   _c(
                     "v-list-item-action",
                     [
                       _c("v-icon", { attrs: { color: "grey darken-1" } }, [
-                        _vm._v("mdi-settings")
+                        _vm._v("mdi-logout")
                       ])
                     ],
                     1
@@ -19916,7 +19953,7 @@ var render = function() {
                   _c(
                     "v-list-item-title",
                     { staticClass: "grey--text text--darken-1" },
-                    [_vm._v("Manage Subscriptions")]
+                    [_vm._v("Logout")]
                   )
                 ],
                 1
@@ -19985,7 +20022,51 @@ var render = function() {
               _c(
                 "v-row",
                 { attrs: { justify: "center", align: "center" } },
-                [_c("v-col", { staticClass: "shrink" })],
+                [
+                  _c(
+                    "v-col",
+                    { staticClass: "shrink" },
+                    [
+                      _c(
+                        "v-snackbar",
+                        {
+                          model: {
+                            value: _vm.snackbar,
+                            callback: function($$v) {
+                              _vm.snackbar = $$v
+                            },
+                            expression: "snackbar"
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\n                        " +
+                              _vm._s(_vm.sanack_text) +
+                              "\n                        "
+                          ),
+                          _c(
+                            "v-btn",
+                            {
+                              attrs: { color: "pink", text: "" },
+                              on: {
+                                click: function($event) {
+                                  _vm.snackbar = false
+                                }
+                              }
+                            },
+                            [
+                              _vm._v(
+                                "\n                            Close\n                        "
+                              )
+                            ]
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
                 1
               )
             ],
@@ -20096,6 +20177,7 @@ var render = function() {
                                 [
                                   _c("v-text-field", {
                                     attrs: {
+                                      color: "error",
                                       label: "Login",
                                       name: "login",
                                       "prepend-icon":
@@ -20113,6 +20195,7 @@ var render = function() {
                                   _vm._v(" "),
                                   _c("v-text-field", {
                                     attrs: {
+                                      color: "error",
                                       id: "password",
                                       label: "Password",
                                       name: "password",

@@ -45,11 +45,11 @@
                     </v-list-item-action>
                     <v-list-item-title class="grey--text text--darken-1">Browse Channels</v-list-item-title>
                 </v-list-item>
-                <v-list-item link>
+                <v-list-item @click="logout" link>
                     <v-list-item-action>
-                        <v-icon color="grey darken-1">mdi-settings</v-icon>
+                        <v-icon color="grey darken-1">mdi-logout</v-icon>
                     </v-list-item-action>
-                    <v-list-item-title class="grey--text text--darken-1">Manage Subscriptions</v-list-item-title>
+                    <v-list-item-title class="grey--text text--darken-1">Logout</v-list-item-title>
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
@@ -94,6 +94,19 @@
                 >
                     <v-col class="shrink">
 
+                        <v-snackbar
+                            v-model="snackbar"
+                        >
+                            {{ sanack_text }}
+                            <v-btn
+                                color="pink"
+                                text
+                                @click="snackbar = false"
+                            >
+                                Close
+                            </v-btn>
+                        </v-snackbar>
+
                     </v-col>
                 </v-row>
             </v-container>
@@ -123,10 +136,27 @@
                 { picture: 58, text: 'Nokia' },
                 { picture: 78, text: 'MKBHD' },
             ],
+            snackbar: false,
+            sanack_text: ''
         }),
         created () {
-            this.$vuetify.theme.dark = true
+            this.$vuetify.theme.dark = true;
+            this.sanack_text = 'You are login successfully!';
+            this.snackbar = true;
         },
+        methods: {
+            logout()
+            {
+                localStorage.removeItem('token');
+                this.$router.push('/login')
+                    .then(res => {
+                        console.log('Logout Successfully')
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+            }
+        }
     }
 </script>
 
