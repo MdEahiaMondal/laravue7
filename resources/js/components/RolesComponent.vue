@@ -89,7 +89,7 @@
                     text: 'SI',
                     align: 'start',
                     sortable: false,
-                    value: 'name',
+                    value: 'id',
                 },
                 { text: 'Name', value: 'name' },
                 { text: 'Created At', value: 'created_at' },
@@ -161,7 +161,11 @@
                     })
                     .catch(error => {
                         this.loading = false;
-                        console.log(error)
+                        if(error.response.status === 401)
+                        {
+                            localStorage.removeItem('token');
+                            this.$router.push({name: 'Login'});
+                        }
                     })
             },
 
