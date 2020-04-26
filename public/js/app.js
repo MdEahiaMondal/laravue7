@@ -2339,47 +2339,46 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       dialog: false,
+      loading: false,
       headers: [{
-        text: 'Dessert (100g serving)',
+        text: 'SI',
         align: 'start',
         sortable: false,
         value: 'name'
       }, {
-        text: 'Calories',
-        value: 'calories'
+        text: 'Name',
+        value: 'name'
       }, {
-        text: 'Fat (g)',
-        value: 'fat'
+        text: 'Created At',
+        value: 'created_at'
       }, {
-        text: 'Carbs (g)',
-        value: 'carbs'
-      }, {
-        text: 'Protein (g)',
-        value: 'protein'
+        text: 'Updated At',
+        value: 'updated_at'
       }, {
         text: 'Actions',
         value: 'actions',
         sortable: false
       }],
-      desserts: [],
+      roles: [],
       editedIndex: -1,
       editedItem: {
+        si: '',
         name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0
+        created_at: 0,
+        updated_at: 0
       },
       defaultItem: {
+        si: '',
         name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0
+        created_at: 0,
+        updated_at: 0
       }
     };
   },
@@ -2395,95 +2394,65 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.initialize();
-    this.$vuetify.theme.dark = true;
   },
   methods: {
     initialize: function initialize() {
-      this.desserts = [{
-        name: 'Frozen Yogurt',
-        calories: 159,
-        fat: 6.0,
-        carbs: 24,
-        protein: 4.0
-      }, {
-        name: 'Ice cream sandwich',
-        calories: 237,
-        fat: 9.0,
-        carbs: 37,
-        protein: 4.3
-      }, {
-        name: 'Eclair',
-        calories: 262,
-        fat: 16.0,
-        carbs: 23,
-        protein: 6.0
-      }, {
-        name: 'Cupcake',
-        calories: 305,
-        fat: 3.7,
-        carbs: 67,
-        protein: 4.3
-      }, {
-        name: 'Gingerbread',
-        calories: 356,
-        fat: 16.0,
-        carbs: 49,
-        protein: 3.9
-      }, {
-        name: 'Jelly bean',
-        calories: 375,
-        fat: 0.0,
-        carbs: 94,
-        protein: 0.0
-      }, {
-        name: 'Lollipop',
-        calories: 392,
-        fat: 0.2,
-        carbs: 98,
-        protein: 0
-      }, {
-        name: 'Honeycomb',
-        calories: 408,
-        fat: 3.2,
-        carbs: 87,
-        protein: 6.5
-      }, {
-        name: 'Donut',
-        calories: 452,
-        fat: 25.0,
-        carbs: 51,
-        protein: 4.9
-      }, {
-        name: 'KitKat',
-        calories: 518,
-        fat: 26.0,
-        carbs: 65,
-        protein: 7
-      }];
+      var _this = this;
+
+      // Add a request interceptor
+      axios.interceptors.request.use(function (config) {
+        // Do something before request is sent
+        _this.loading = true;
+        return config;
+      }, function (error) {
+        // Do something with request erro
+        _this.loading = false;
+        return Promise.reject(error);
+      }); // Add a response interceptor
+
+      axios.interceptors.response.use(function (response) {
+        // Any status code that lie within the range of 2xx cause this function to trigger
+        // Do something with response data
+        _this.loading = false;
+        return response;
+      }, function (error) {
+        // Any status codes that falls outside the range of 2xx cause this function to trigger
+        // Do something with response error
+        _this.loading = false;
+        return Promise.reject(error);
+      }); // fatch all roles
+
+      axios.get('/api/roles').then(function (res) {
+        _this.loading = false;
+        _this.roles = res.data.roles;
+      })["catch"](function (error) {
+        _this.loading = false;
+        console.log(error);
+      });
     },
     editItem: function editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
+      this.editedIndex = this.roles.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
     deleteItem: function deleteItem(item) {
-      var index = this.desserts.indexOf(item);
-      confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1);
+      var index = this.roles.indexOf(item);
+      confirm('Are you sure you want to delete this item?') && this.roles.splice(index, 1);
     },
     close: function close() {
-      var _this = this;
+      var _this2 = this;
 
       this.dialog = false;
       setTimeout(function () {
-        _this.editedItem = Object.assign({}, _this.defaultItem);
-        _this.editedIndex = -1;
+        _this2.editedItem = Object.assign({}, _this2.defaultItem);
+        _this2.editedIndex = -1;
       }, 300);
     },
     save: function save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
+        Object.assign(this.roles[this.editedIndex], this.editedItem);
       } else {
-        this.desserts.push(this.editedItem);
+        this.roles.push(this.editedItem);
       }
 
       this.close();
@@ -20604,7 +20573,14 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("v-data-table", {
     staticClass: "elevation-1",
-    attrs: { headers: _vm.headers, items: _vm.desserts, "sort-by": "calories" },
+    staticStyle: { "background-color": "#363636" },
+    attrs: {
+      headers: _vm.headers,
+      items: _vm.roles,
+      "sort-by": "calories",
+      loading: _vm.loading,
+      "loading-text": "Loading... Please wait"
+    },
     scopedSlots: _vm._u([
       {
         key: "top",
