@@ -141,8 +141,11 @@
         }),
         created () {
             this.$vuetify.theme.dark = true;
+        },
+        mounted(){
+            this.snackbar = localStorage.getItem('loggedIn') ?? false;
+            localStorage.removeItem('loggedIn');
             this.sanack_text = 'You are login successfully!';
-            this.snackbar = true;
         },
         methods: {
             logout()

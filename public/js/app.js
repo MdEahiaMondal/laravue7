@@ -2070,8 +2070,13 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.$vuetify.theme.dark = true;
+  },
+  mounted: function mounted() {
+    var _localStorage$getItem;
+
+    this.snackbar = (_localStorage$getItem = localStorage.getItem('loggedIn')) !== null && _localStorage$getItem !== void 0 ? _localStorage$getItem : false;
+    localStorage.removeItem('loggedIn');
     this.sanack_text = 'You are login successfully!';
-    this.snackbar = true;
   },
   methods: {
     logout: function logout() {
@@ -2166,10 +2171,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "LoginComponent",
   data: function data() {
     return {
+      valid: true,
+      usernameRules: [function (v) {
+        return !!v || 'Username is required';
+      }],
+      passwordRules: [function (v) {
+        return !!v || 'Password is required';
+      }],
       username: '',
       password: '',
       loading: false,
@@ -2219,6 +2233,8 @@ __webpack_require__.r(__webpack_exports__);
         })["catch"](function (error) {
           console.log(error);
         });
+
+        localStorage.setItem('loggedIn', true);
       })["catch"](function (error) {
         _this.snackbar = true;
         _this.sanack_text = error.response.data.status;
@@ -20174,10 +20190,22 @@ var render = function() {
                               _vm._v(" "),
                               _c(
                                 "v-form",
+                                {
+                                  ref: "form",
+                                  model: {
+                                    value: _vm.valid,
+                                    callback: function($$v) {
+                                      _vm.valid = $$v
+                                    },
+                                    expression: "valid"
+                                  }
+                                },
                                 [
                                   _c("v-text-field", {
                                     attrs: {
                                       color: "error",
+                                      rules: _vm.usernameRules,
+                                      required: "",
                                       label: "Login",
                                       name: "login",
                                       "prepend-icon":
@@ -20196,6 +20224,7 @@ var render = function() {
                                   _c("v-text-field", {
                                     attrs: {
                                       color: "error",
+                                      rules: _vm.passwordRules,
                                       id: "password",
                                       label: "Password",
                                       name: "password",
@@ -20224,7 +20253,11 @@ var render = function() {
                               _c(
                                 "v-btn",
                                 {
-                                  attrs: { color: "error", block: "" },
+                                  attrs: {
+                                    color: "error",
+                                    block: "",
+                                    disabled: !_vm.valid
+                                  },
                                   on: { click: _vm.login }
                                 },
                                 [_vm._v("Login")]

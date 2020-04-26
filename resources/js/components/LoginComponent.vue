@@ -17,13 +17,15 @@
                                     top
                                     color="white"
                                 ></v-progress-linear>
-                                <v-form>
-                                    <v-text-field color="error" label="Login" v-model="username" name="login" prepend-icon="mdi-account-circle-outline" type="text"/>
-                                    <v-text-field  color="error" id="password" v-model="password" label="Password" name="password" prepend-icon="mdi-account-lock-outline" type="password"/>
+                                <v-form ref="form"
+                                        v-model="valid"
+                                >
+                                    <v-text-field color="error" :rules="usernameRules" required label="Login" v-model="username" name="login" prepend-icon="mdi-account-circle-outline" type="text"/>
+                                    <v-text-field  color="error" :rules="passwordRules" id="password" v-model="password" label="Password" name="password" prepend-icon="mdi-account-lock-outline" type="password"/>
                                 </v-form>
                             </v-card-text>
                             <v-card-actions>
-                                <v-btn color="error" block @click="login">Login</v-btn>
+                                <v-btn color="error" block @click="login" :disabled="!valid">Login</v-btn>
                             </v-card-actions>
                         </v-card>
 
@@ -53,6 +55,13 @@
         data()
         {
           return {
+              valid: true,
+              usernameRules: [
+                  v => !!v || 'Username is required',
+              ],
+              passwordRules: [
+                  v => !!v || 'Password is required',
+              ],
               username: '',
               password: '',
               loading: false,
@@ -99,7 +108,8 @@
                             })
                             .catch(error => {
                                 console.log(error)
-                            })
+                            });
+                        localStorage.setItem('loggedIn', true)
                     })
                     .catch(error => {
                         this.snackbar = true;
