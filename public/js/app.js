@@ -2024,8 +2024,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "AdminComponent",
   props: {
@@ -2034,6 +2032,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       drawer: null,
+      theme: true,
       items: [{
         icon: 'mdi-account',
         text: 'Users',
@@ -2084,6 +2083,11 @@ __webpack_require__.r(__webpack_exports__);
     this.snackbar = (_localStorage$getItem = localStorage.getItem('loggedIn')) !== null && _localStorage$getItem !== void 0 ? _localStorage$getItem : false;
     localStorage.removeItem('loggedIn');
     this.sanack_text = 'You are login successfully!';
+  },
+  watch: {
+    theme: function theme(old) {
+      this.$vuetify.theme.dark = old;
+    }
   },
   methods: {
     logout: function logout() {
@@ -2261,7 +2265,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
 //
 //
 //
@@ -20194,21 +20197,17 @@ var render = function() {
                 "v-list-item",
                 { staticClass: "mt-4", attrs: { link: "" } },
                 [
-                  _c(
-                    "v-list-item-action",
-                    [
-                      _c("v-icon", { attrs: { color: "grey darken-1" } }, [
-                        _vm._v("mdi-plus-circle-outline")
-                      ])
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "v-list-item-title",
-                    { staticClass: "grey--text text--darken-1" },
-                    [_vm._v("Browse Channels")]
-                  )
+                  _c("v-switch", {
+                    staticClass: "ma-4",
+                    attrs: { label: "Change Theme" },
+                    model: {
+                      value: _vm.theme,
+                      callback: function($$v) {
+                        _vm.theme = $$v
+                      },
+                      expression: "theme"
+                    }
+                  })
                 ],
                 1
               ),
@@ -20617,7 +20616,6 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("v-data-table", {
     staticClass: "elevation-1",
-    staticStyle: { "background-color": "#363636" },
     attrs: {
       headers: _vm.headers,
       items: _vm.roles,

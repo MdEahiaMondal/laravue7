@@ -5,7 +5,6 @@
         :items="roles"
         sort-by="calories"
         class="elevation-1"
-        style="background-color:#363636"
         :loading="loading"
         loading-text="Loading... Please wait"
     >

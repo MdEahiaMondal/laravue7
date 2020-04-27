@@ -41,10 +41,8 @@
                     class="mt-4"
                     link
                 >
-                    <v-list-item-action>
-                        <v-icon color="grey darken-1">mdi-plus-circle-outline</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-title class="grey--text text--darken-1">Browse Channels</v-list-item-title>
+
+                 <v-switch v-model="theme" class="ma-4" label="Change Theme"></v-switch>
                 </v-list-item>
                 <v-list-item @click="logout" link>
                     <v-list-item-action>
@@ -124,6 +122,7 @@
         },
         data: () => ({
             drawer: null,
+            theme: true,
             items: [
                 { icon: 'mdi-account', text: 'Users', action: 'users' },
                 { icon: 'mdi-post-outline', text: 'Posts', action: 'posts' },
@@ -148,6 +147,11 @@
             this.snackbar = localStorage.getItem('loggedIn') ?? false;
             localStorage.removeItem('loggedIn');
             this.sanack_text = 'You are login successfully!';
+        },
+        watch: {
+            theme: function (old) {
+                this.$vuetify.theme.dark = old;
+            }
         },
         methods: {
             logout()
