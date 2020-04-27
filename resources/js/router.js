@@ -22,13 +22,11 @@ const routes = [
             }
         ],
         beforeEnter: (to, from, next) => {
-            if (localStorage.getItem('token'))
-            {
-                next();
-            }else{
-                next({name: 'Login'});
-            }
+            axios.get('api/verify')
+                .then(res => next())
+                .catch(error =>  next('/login'))
         }
+
     },
 ];
 const router = new VueRouter({routes});

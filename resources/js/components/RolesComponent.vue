@@ -10,8 +10,8 @@
         loading-text="Loading... Please wait"
     >
         <template v-slot:top>
-            <v-toolbar flat color="white">
-                <v-toolbar-title>My CRUD</v-toolbar-title>
+            <v-toolbar flat color="dark">
+                <v-toolbar-title>Role Management System</v-toolbar-title>
                 <v-divider
                     class="mx-4"
                     inset
@@ -20,7 +20,7 @@
                 <v-spacer></v-spacer>
                 <v-dialog v-model="dialog" max-width="500px">
                     <template v-slot:activator="{ on }">
-                        <v-btn color="primary" dark class="mb-2" v-on="on">New Item</v-btn>
+                        <v-btn color="error" dark class="mb-2" v-on="on">Add New Role</v-btn>
                     </template>
                     <v-card>
                         <v-card-title>
@@ -30,20 +30,8 @@
                         <v-card-text>
                             <v-container>
                                 <v-row>
-                                    <v-col cols="12" sm="6" md="4">
-                                        <v-text-field v-model="editedItem.name" label="Dessert name"></v-text-field>
-                                    </v-col>
-                                    <v-col cols="12" sm="6" md="4">
-                                        <v-text-field v-model="editedItem.calories" label="Calories"></v-text-field>
-                                    </v-col>
-                                    <v-col cols="12" sm="6" md="4">
-                                        <v-text-field v-model="editedItem.fat" label="Fat (g)"></v-text-field>
-                                    </v-col>
-                                    <v-col cols="12" sm="6" md="4">
-                                        <v-text-field v-model="editedItem.carbs" label="Carbs (g)"></v-text-field>
-                                    </v-col>
-                                    <v-col cols="12" sm="6" md="4">
-                                        <v-text-field v-model="editedItem.protein" label="Protein (g)"></v-text-field>
+                                    <v-col cols="12" sm="12">
+                                        <v-text-field v-model="editedItem.name" color="error" label="Role Name"></v-text-field>
                                     </v-col>
                                 </v-row>
                             </v-container>
@@ -51,12 +39,26 @@
 
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
-                            <v-btn color="blue darken-1" text @click="save">Save</v-btn>
+                            <v-btn color="error darken-1" text @click="close">Cancel</v-btn>
+                            <v-btn color="error darken-1" text @click="save">Save</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
             </v-toolbar>
+
+            <v-snackbar
+                v-model="snackbar"
+            >
+                {{ sanack_text }}
+                <v-btn
+                    color="pink"
+                    text
+                    @click="snackbar = false"
+                >
+                    Close
+                </v-btn>
+            </v-snackbar>
+
         </template>
         <template v-slot:item.actions="{ item }">
             <v-icon
@@ -68,6 +70,7 @@
             </v-icon>
             <v-icon
                 small
+                color="error"
                 @click="deleteItem(item)"
             >
                 mdi-delete
@@ -84,6 +87,8 @@
         data: () => ({
             dialog: false,
             loading: false,
+            sanack_text: '',
+            snackbar: false,
             headers: [
                 {
                     text: 'SI',
@@ -113,7 +118,7 @@
         }),
         computed: {
             formTitle () {
-                return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+                return this.editedIndex === -1 ? 'New Role' : 'Edit Role'
             },
         },
 
@@ -177,7 +182,19 @@
 
             deleteItem (item) {
                 const index = this.roles.indexOf(item)
-                confirm('Are you sure you want to delete this item?') && this.roles.splice(index, 1)
+                let confid = confirm('Are you sure you want to delete this item?')
+                    if(confid)
+                    {
+                        axios.delete('api/roles/'+item.id)
+                            .then(res => {
+                                this.roles.splice(index, 1)
+                                this.snackbar = true;
+                                this.sanack_text = "Role Deleted  Success"
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            })
+                    }
             },
 
             close () {
@@ -190,9 +207,26 @@
 
             save () {
                 if (this.editedIndex > -1) {
-                    Object.assign(this.roles[this.editedIndex], this.editedItem)
+                    axios.put('api/roles/'+this.editedItem.id, {'name': this.editedItem.name})
+                        .then(res => {
+                            Object.assign(this.roles[this.editedIndex], res.data.role);
+                            this.snackbar = true;
+                            this.sanack_text = "Role Updated  Success"
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        });
+
                 } else {
-                    this.roles.push(this.editedItem)
+                    axios.post('api/roles', {'name': this.editedItem.name})
+                    .then(res => {
+                        this.roles.push(res.data.role);
+                        this.snackbar = true;
+                        this.sanack_text = "Another New Role Created Success"
+                    })
+                    .catch(error => {
+                        console.log(error.response)
+                    })
                 }
                 this.close()
             },
